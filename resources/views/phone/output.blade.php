@@ -161,10 +161,20 @@
         getData()
 
         $('#edit').click(function () {
-            $('#phone_number').val($("input[type='radio']:checked").data('phone_number'))
-            $("#provider").val($("input[type='radio']:checked").data('provider'))
-            $("#id").val($("input[type='radio']:checked").data('id'))
-            $('#exampleModal').modal("show");
+            let checked = $("input[type='radio']:checked").val()
+            if(checked != undefined) {
+                $('#phone_number').val($("input[type='radio']:checked").data('phone_number'))
+                $("#provider").val($("input[type='radio']:checked").data('provider'))
+                $("#id").val($("input[type='radio']:checked").data('id'))
+                $('#exampleModal').modal("show");
+            }else{
+                new Noty({
+                    type: 'error',
+                    layout: 'topRight',
+                    text: 'pilih nomor telp terlebih dahulu',
+                    timeout: 5000
+                }).show();
+            }
         });
 
         $('form').submit(function (event) {
@@ -204,31 +214,41 @@
         });
 
         $('#delete').click(function () {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: '{{url('/api/phone')}}/' + $("input[type='radio']:checked").val(),
-                        dataType: 'json',
-                        success: function (data) {
-                            Swal.fire(
-                                'Deleted!',
-                                'Your file has been deleted.',
-                                'success'
-                            )
-                        }
-                    });
+            let checked = $("input[type='radio']:checked").val()
+            if(checked != undefined) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '{{url('/api/phone')}}/' + checked,
+                            dataType: 'json',
+                            success: function (data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success'
+                                )
+                            }
+                        });
 
-                }
-            })
+                    }
+                })
+            }else{
+                new Noty({
+                    type: 'error',
+                    layout: 'topRight',
+                    text: 'pilih nomor telp terlebih dahulu',
+                    timeout: 5000
+                }).show();
+            }
         })
 
     </script>
